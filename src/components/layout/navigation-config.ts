@@ -30,15 +30,20 @@ export interface NavSection {
 
 export const NAVIGATION_SECTIONS: NavSection[] = [
   {
-    title: 'WORKSPACE',
+    title: 'OVERVIEW',
     items: [
       {
         name: 'Dashboard',
         href: (slug) => `/${slug}`,
         icon: LayoutDashboard,
         exact: true,
-        description: 'Executive overview and real-time operational status',
+        description: 'Operations console and real-time communication desk',
       },
+    ],
+  },
+  {
+    title: 'AI COMMUNICATION',
+    items: [
       {
         name: 'AI Agents',
         href: (slug) => `/${slug}/agents`,
@@ -53,6 +58,17 @@ export const NAVIGATION_SECTIONS: NavSection[] = [
         description: 'Call logs, transcripts, sentiment, and conversation summaries',
       },
       {
+        name: 'Telephony',
+        href: (slug) => `/${slug}/telephony`,
+        icon: Phone,
+        description: 'Virtual DID lines and AI counselor line assignments',
+      },
+    ],
+  },
+  {
+    title: 'ADMISSIONS',
+    items: [
+      {
         name: 'Leads CRM',
         href: (slug) => `/${slug}/leads`,
         icon: Users,
@@ -64,18 +80,22 @@ export const NAVIGATION_SECTIONS: NavSection[] = [
         icon: CalendarClock,
         description: 'Counselor follow-up tasks, campus visits, and callbacks',
       },
+    ],
+  },
+  {
+    title: 'AI KNOWLEDGE',
+    items: [
       {
         name: 'Knowledge Base',
         href: (slug) => `/${slug}/knowledge`,
         icon: BookOpen,
         description: 'Curated institutional facts, fee schedules, and admission FAQs',
       },
-      {
-        name: 'Telephony',
-        href: (slug) => `/${slug}/telephony`,
-        icon: Phone,
-        description: 'Virtual DID lines and AI counselor line assignments',
-      },
+    ],
+  },
+  {
+    title: 'INSIGHTS',
+    items: [
       {
         name: 'Analytics & Usage',
         href: (slug) => `/${slug}/analytics`,
@@ -85,7 +105,7 @@ export const NAVIGATION_SECTIONS: NavSection[] = [
     ],
   },
   {
-    title: 'ORGANIZATION',
+    title: 'ADMINISTRATION',
     items: [
       {
         name: 'Team & Access',
@@ -94,7 +114,7 @@ export const NAVIGATION_SECTIONS: NavSection[] = [
         description: 'Admissions staff members, roles, and access management',
       },
       {
-        name: 'Subscription / Plan',
+        name: 'Subscription',
         href: (slug) => `/${slug}/subscription`,
         icon: CreditCard,
         description: 'Plan tier, carrier voice minutes quota, and billing status',
