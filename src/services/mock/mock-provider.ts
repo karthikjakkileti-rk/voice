@@ -19,6 +19,7 @@ import {
   UsageSummary,
   UsageAnalytics,
   PaginatedResponse,
+  Subscription,
 } from '@/types/api';
 import { DemoAuditLog, DemoFollowupTask, DemoKnowledgeChunk } from '@/types/demo';
 import {
@@ -36,6 +37,7 @@ import {
   SEEDED_USAGE_ANALYTICS,
   SEEDED_DEMO_FOLLOWUPS,
   SEEDED_DEMO_AUDIT_LOGS,
+  SEEDED_SUBSCRIPTIONS,
 } from './mock-data';
 
 class MockProvider {
@@ -50,6 +52,7 @@ class MockProvider {
   private knowledgeChunks: DemoKnowledgeChunk[] = [...SEEDED_KNOWLEDGE_CHUNKS];
   private followups: DemoFollowupTask[] = [...SEEDED_DEMO_FOLLOWUPS];
   private auditLogs: DemoAuditLog[] = [...SEEDED_DEMO_AUDIT_LOGS];
+  private subscriptions: Record<string, Subscription> = { ...SEEDED_SUBSCRIPTIONS };
 
   // Auth / Me
   async getMe(): Promise<UserProfile> {
@@ -477,6 +480,61 @@ class MockProvider {
   async getDemoAuditLogs(orgId: string): Promise<DemoAuditLog[]> {
     await this.delay(100);
     return this.auditLogs.filter((a) => a.organization_id === orgId);
+  }
+
+  // Subscriptions & Institution Pricing
+  async getSubscription(orgId: string): Promise<Subscription> {
+    await this.delay(100);
+    if (!this.subscriptions[orgId]) {
+      this.subscriptions[orgId] = {
+        id: `sub_${orgId.slice(0, 8)}`,
+        organization_id: orgId,
+        plan_tier: 'pro',
+        plan_name: 'Institutional Pro',
+        status: 'active',
+        billing_cycle: 'monthly',
+        voice_minutes_limit: 5000,
+        call_limit: 2000,
+        phone_numbers_limit: 5,
+        current_period_start: new Date().toISOString(),
+        current_period_end: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        renewal_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        currency: 'INR',
+        price_amount: 15000,
+        amount_cents: 1500000,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+    }
+    return { ...this.subscriptions[orgId] };
+  }
+
+  async updateSubscription(orgId: string, payload: Partial<Subscription>): Promise<Subscription> {
+    await this.delay(200);
+    const existing = await this.getSubscription(orgId);
+
+    const priceAmount = payload.price_amount !== undefined
+      ? payload.price_amount
+      : payload.amount_cents !== undefined
+        ? payload.amount_cents / 100
+        : existing.price_amount;
+
+    const amountCents = payload.amount_cents !== undefined
+      ? payload.amount_cents
+      : priceAmount !== undefined
+        ? Math.round(priceAmount * 100)
+        : existing.amount_cents;
+
+    const updated: Subscription = {
+      ...existing,
+      ...payload,
+      price_amount: priceAmount,
+      amount_cents: amountCents,
+      updated_at: new Date().toISOString(),
+    };
+
+    this.subscriptions[orgId] = updated;
+    return { ...updated };
   }
 
   private delay(ms: number) {

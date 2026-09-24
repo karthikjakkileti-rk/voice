@@ -20,6 +20,7 @@ import {
   UsageSummary,
   UsageAnalytics,
   PaginatedResponse,
+  Subscription,
 } from '@/types/api';
 import { DemoAuditLog, DemoFollowupTask, DemoKnowledgeChunk } from '@/types/demo';
 import {
@@ -31,6 +32,7 @@ import {
   apiLeadsService,
   apiKnowledgeService,
   apiUsageService,
+  apiSubscriptionService,
 } from './api';
 import { mockProvider } from './mock/mock-provider';
 
@@ -230,6 +232,19 @@ export const dataProvider = {
   async getUsageAnalytics(orgId: string): Promise<UsageAnalytics> {
     if (isDemoMode()) return mockProvider.getUsageAnalytics(orgId);
     return apiUsageService.getAnalytics(orgId);
+  },
+
+  // ---------------------------------------------------------------------------
+  // Subscription & Institution Pricing
+  // ---------------------------------------------------------------------------
+  async getSubscription(orgId: string): Promise<Subscription> {
+    if (isDemoMode()) return mockProvider.getSubscription(orgId);
+    return apiSubscriptionService.get(orgId);
+  },
+
+  async updateSubscription(orgId: string, payload: Partial<Subscription>): Promise<Subscription> {
+    if (isDemoMode()) return mockProvider.updateSubscription(orgId, payload);
+    return apiSubscriptionService.update(orgId, payload);
   },
 
   // ---------------------------------------------------------------------------

@@ -13,6 +13,7 @@ import { usePhoneNumbers } from '@/hooks/usePhoneNumbers';
 import { useLeads } from '@/hooks/useLeads';
 import { useKnowledge } from '@/hooks/useKnowledge';
 import { useFollowups } from '@/hooks/useFollowups';
+import { useSubscription } from '@/hooks/useSubscription';
 import { isDemoMode } from '@/services/data-provider';
 import { ErrorState } from '@/components/shared/error-state';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -46,10 +47,13 @@ import {
   Check,
   ExternalLink,
   Sparkles,
+  CreditCard,
 } from 'lucide-react';
 import {
   formatDuration,
   formatDateTime,
+  formatDate,
+  formatCurrency,
   formatPhoneNumber,
   getSentimentBadgeClass,
   getLeadStatusBadgeClass,
@@ -112,6 +116,7 @@ export default function OperationsConsoleDashboard() {
   const { documents, isLoading: isKnowledgeLoading } = useKnowledge(organizationId);
   const { followups, isLoading: isFollowupsLoading, refetch: refetchFollowups, completeFollowup } =
     useFollowups(organizationId);
+  const { subscription, isLoading: isSubLoading } = useSubscription(organizationId);
 
   // Quick Resolve modal state for follow-ups in Action Required
   const [resolveTask, setResolveTask] = useState<DemoFollowupTask | null>(null);
@@ -856,6 +861,63 @@ export default function OperationsConsoleDashboard() {
                     </Badge>
                   </div>
                 ))
+              )}
+            </CardContent>
+          </Card>
+
+          {/* SECTION 12 — COMPACT SUBSCRIPTION & PLAN SUMMARY */}
+          <Card className="bg-white dark:bg-slate-900 border-slate-200/90 dark:border-slate-800 shadow-xs">
+            <CardHeader className="py-2.5 px-3.5 border-b border-slate-200/80 dark:border-slate-800 flex flex-row items-center justify-between">
+              <div className="flex items-center gap-2">
+                <CreditCard className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                <CardTitle className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider font-mono">
+                  Subscription & Plan
+                </CardTitle>
+              </div>
+              <Badge variant="success" size="sm" className="capitalize text-[10px]">
+                ● {subscription?.status || 'active'}
+              </Badge>
+            </CardHeader>
+
+            <CardContent className="p-3.5 space-y-3">
+              {isSubLoading ? (
+                <Skeleton className="h-20 w-full rounded" />
+              ) : (
+                <>
+                  <div>
+                    <p className="font-bold text-sm text-slate-900 dark:text-white">
+                      {subscription?.plan_name || 'Institutional Pro'}
+                    </p>
+                    <div className="flex items-baseline gap-1 mt-0.5">
+                      <span className="text-xl font-extrabold text-slate-900 dark:text-white font-mono tracking-tight">
+                        {formatCurrency(
+                          subscription?.price_amount ?? (subscription?.amount_cents ? subscription.amount_cents / 100 : 15000),
+                          subscription?.currency || 'INR'
+                        )}
+                      </span>
+                      <span className="text-xs text-slate-500 font-medium">
+                        / {subscription?.billing_cycle === 'annual' ? 'year' : subscription?.billing_cycle === 'quarterly' ? 'quarter' : 'month'}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between text-[11px] pt-2 border-t border-slate-100 dark:border-slate-800 text-slate-500">
+                    <span>
+                      Renews:{' '}
+                      <strong className="text-slate-700 dark:text-slate-300 font-semibold">
+                        {formatDate(subscription?.renewal_date || subscription?.current_period_end || '2026-10-24')}
+                      </strong>
+                    </span>
+                    <span className="font-mono text-slate-400 uppercase text-[10px]">{subscription?.plan_tier || 'pro'}</span>
+                  </div>
+
+                  <Link href={`/${orgSlug}/subscription`} className="block w-full">
+                    <Button variant="outline" size="sm" className="w-full text-xs font-semibold justify-center gap-1.5 h-8">
+                      <span>Manage Subscription</span>
+                      <ArrowRight className="w-3 h-3" />
+                    </Button>
+                  </Link>
+                </>
               )}
             </CardContent>
           </Card>

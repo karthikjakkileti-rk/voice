@@ -441,16 +441,34 @@ export interface Subscription {
   plan_tier: 'starter' | 'pro' | 'enterprise' | string;
   plan_name?: string;
   status: 'active' | 'trialing' | 'past_due' | 'canceled' | string;
-  billing_cycle?: 'monthly' | 'annual' | string;
+  billing_cycle?: 'monthly' | 'quarterly' | 'annual' | string;
   voice_minutes_limit?: number | null;
   call_limit?: number | null;
   phone_numbers_limit?: number | null;
   current_period_start?: string;
   current_period_end?: string;
+  renewal_date?: string;
   currency?: string;
+  price_amount?: number;
   amount_cents?: number;
   created_at: string;
   updated_at?: string;
+}
+
+export interface SubscriptionUpdatePayload {
+  plan_tier?: 'starter' | 'pro' | 'enterprise' | string;
+  plan_name?: string;
+  status?: 'active' | 'trialing' | 'past_due' | 'canceled' | string;
+  billing_cycle?: 'monthly' | 'quarterly' | 'annual' | string;
+  price_amount?: number;
+  amount_cents?: number;
+  currency?: string;
+  voice_minutes_limit?: number | null;
+  call_limit?: number | null;
+  phone_numbers_limit?: number | null;
+  renewal_date?: string;
+  current_period_start?: string;
+  current_period_end?: string;
 }
 
 // -----------------------------------------------------------------------------

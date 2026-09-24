@@ -293,5 +293,11 @@ export const apiSubscriptionService = {
   async get(orgId: string): Promise<Subscription> {
     return apiClient<Subscription>(`/organizations/${orgId}/subscription`);
   },
+  async update(orgId: string, payload: Partial<Subscription>): Promise<Subscription> {
+    return apiClient<Subscription>(`/organizations/${orgId}/subscription`, {
+      method: 'PATCH',
+      body: JSON.stringify(payload),
+    });
+  },
 };
 

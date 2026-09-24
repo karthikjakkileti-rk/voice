@@ -137,3 +137,9 @@ All responses strictly follow standard JSON wrappers:
 | `GET` | `/api/v1/organizations/{organization_id}/usage` | Member+ | List usage records (filter by `metric_type`, `from_date`, `to_date`). |
 | `GET` | `/api/v1/organizations/{organization_id}/usage/summary` | Member+ | Aggregated usage metrics (voice minutes, tokens, cost). |
 | `GET` | `/api/v1/organizations/{organization_id}/audit-logs` | Admin | Administrative security and audit logs. |
+
+### 3.9 Subscriptions & Institution Pricing
+| Method | Endpoint | Access Role | Description |
+|---|---|---|---|
+| `GET` | `/api/v1/organizations/{organization_id}/subscription` | Member+ | Get current institution subscription, pricing, renewal, and quota limits. |
+| `PATCH` | `/api/v1/organizations/{organization_id}/subscription` | Admin | Update institution plan tier, configured price amount, currency, billing cycle, and limits. |

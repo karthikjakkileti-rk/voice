@@ -119,3 +119,16 @@ export function getLeadStatusBadgeClass(status?: string | null): string {
       return 'bg-slate-50 text-slate-700 border-slate-200';
   }
 }
+
+export function formatCurrency(amount: number | null | undefined, currency: string = 'INR'): string {
+  if (amount === undefined || amount === null || isNaN(amount)) return '—';
+  try {
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: currency || 'INR',
+      maximumFractionDigits: 0,
+    }).format(amount);
+  } catch {
+    return `${currency} ${amount.toLocaleString()}`;
+  }
+}
